@@ -405,7 +405,7 @@ pcvoid(ProgressBar2)(struct ParseState *Parser, struct Value *ReturnValue, struc
 }
 
 pcvoid(DefineStatusAreaFlags)(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs) {
-    ReturnValue->Val->Integer = DefineStatusAreaFlags(Param[0]->Val->Integer, Param[1]->Val->Integer, Param[2]->Val->Pointer, Param[3]->Val->Pointer);
+    ReturnValue->Val->Integer = DefineStatusAreaFlags(Param[0]->Val->Integer, Param[1]->Val->Integer, (char*)Param[2]->Val->Pointer, (char*)Param[3]->Val->Pointer);
 }
 
 pcvoid(DefineStatusGlyph)(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs) {
@@ -707,7 +707,7 @@ pcvoid(DisplayMBString)(struct ParseState *Parser, struct Value *ReturnValue, st
 }
 
 pcvoid(DisplayMBString2)(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs) {
-    DisplayMBString2(Param[0]->Val->Integer, (unsigned char*)Param[1]->Val->Pointer, Param[2]->Val->Integer, Param[3]->Val->Integer, Param[4]->Val->Integer, Param[5]->Val->Integer, Param[6]->Val->Integer, Param[7]->Val->Integer, Param[8]->Val->Integer);
+    DisplayMBString2(Param[0]->Val->Integer, (unsigned char*)Param[1]->Val->Pointer, Param[2]->Val->Integer, Param[3]->Val->Integer, Param[4]->Val->Integer, Param[5]->Val->Integer, Param[6]->Val->Integer, Param[7]->Val->Integer, Param[8]->Val->Integer, 0);
 }
 
 pcvoid(EditMBStringCtrl)(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs) {
@@ -2965,7 +2965,7 @@ pcvoid(initChronometer)(struct ParseState *Parser, struct Value *ReturnValue, st
 }
 
 pcvoid(initFile)(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs) {
-    File s;
+    File s = {};
     *(File*)Param[0]->Val->Pointer = s;
 }
 
@@ -2975,7 +2975,7 @@ pcvoid(initTextInput)(struct ParseState *Parser, struct Value *ReturnValue, stru
 }
 
 pcvoid(initAddIn)(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs) {
-    AddIn s;
+    AddIn s = {};
     *(AddIn*)Param[0]->Val->Pointer = s;
 }
 
@@ -3010,7 +3010,7 @@ pcvoid(initTransaction)(struct ParseState *Parser, struct Value *ReturnValue, st
 }
 
 pcvoid(initTOTP)(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs) {
-    totp s;
+    totp s = {};
     *(totp*)Param[0]->Val->Pointer = s;
 }
 

@@ -497,6 +497,6 @@ extern struct LibraryFunction UnistdFunctions[];
 void UnistdSetupFunc(void);
 
 // needed on Prizm:
-void* calloc(int num, int size);
+void* calloc(size_t num, size_t size);
 
 #endif /* INTERPRETER_H */

@@ -1,7 +1,7 @@
 #include "../picoc.h"
 #include "../interpreter.h"
 
-void* calloc(int num, int size) {
+void* calloc(size_t num, size_t size) {
     void* p = malloc(num*size);
     if(!p) return NULL;
     memset(p, 0, num*size);
@@ -27,11 +27,12 @@ int PlatformGetCharacter()
     return 0;
 }
 
-char* curoutptr = (char*)0xE5200000;
+static char picoc_outbuf[4096];
+char* curoutptr = picoc_outbuf;
 /* write a character to the console */
 void PlatformPutc(unsigned char OutCh, union OutputStreamInfo *Stream)
 {
-    if(curoutptr < (char*)0xE5200FFF) {
+    if(curoutptr < picoc_outbuf + sizeof(picoc_outbuf) - 1) {
         *curoutptr = (char)OutCh;
         curoutptr++;
     }
@@ -50,7 +51,7 @@ void PlatformExit(int RetVal)
 /* Utilities - PicoC output glue code */
 
 char* PlatformGetOutputPointer() {
-    return (char*)0xE5200000;
+    return picoc_outbuf;
 }
 
 char* PlatformGetOutputCursor() {
@@ -58,5 +59,6 @@ char* PlatformGetOutputCursor() {
 }
 
 void PlatformClearOutput() {
-    curoutptr = (char*)0xE5200000;
+    curoutptr = picoc_outbuf;
+    picoc_outbuf[0] = '\0';
 }
