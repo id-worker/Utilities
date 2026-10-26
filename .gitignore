@@ -9,6 +9,8 @@
 *.d
 *.bin
 *.g3a
+# ...but the prebuilt binary shipped in this repo must be committed:
+!Utilities.g3a
 
 # Packages #
 ############
