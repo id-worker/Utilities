@@ -77,7 +77,7 @@ int doTextEdit(textEdit* edit) {
       }
       
       clearLine(1, 7); // remove aestethically unpleasing bit of background at the end
-      DisplayMBString2(0, (unsigned char*)edit->buffer, edit->start, edit->cursor, 0, 1, 7*24-24, 21, 0);
+      DisplayMBString2(0, (unsigned char*)edit->buffer, edit->start, edit->cursor, 0, 1, 7*24-24, 21, 0, 0);
     } else if(keyflag == 0x01) {
       // Shift enabled, show labels
       drawFkeyLabels(0x0187, 0x01FC, 0x018D, 0x02A1, 0x0307, 0x0302); // SEARCH, JUMP, SYMBOL, CHAR, A<>a, SAVE

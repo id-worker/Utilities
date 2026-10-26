@@ -44,5 +44,7 @@ void getHardwareID(char* buffer);
 int getHardwareModel();
 int getIsEmulated();
 void setBrightnessToStartupSetting();
+void recordStackBase();
+int getStackUsed();
 
 #endif

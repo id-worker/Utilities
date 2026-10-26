@@ -102,7 +102,7 @@ int TBCD::GetError() {
 }
 
 void TBCD::Swap() {
-  TBCDvalue work;
+  TBCDvalue work = FValue[0];
   FValue[0] = FValue[1];
   FValue[1] = work;
 }

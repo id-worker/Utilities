@@ -205,6 +205,10 @@ void changeFKeyColor() {
     }
   }
 
+  if(getHardwareModel() == 3){
+    keycolor = (unsigned char*) 0xFD8017CC;
+  }
+
   Bdisp_AllClr_VRAM();
   DisplayStatusArea();
   drawScreenTitle("Function Key Color");
@@ -314,6 +318,8 @@ void systemInfo() {
     elem[9].text = (char*)"fx-CG 10";
   } else if(getHardwareModel() == 2) {
     elem[9].text = (char*)"fx-CG 20";
+  } else if(getHardwareModel() == 3) {
+    elem[9].text = (char*)"fx-CG 50";
   } else {
     elem[9].text = (char*)"Unknown";
   }

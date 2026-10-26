@@ -13,6 +13,7 @@
 #include <math.h>
 
 #include "debugGUI.hpp"
+#include "hardwareProvider.hpp"
 #include "menuGUI.hpp"
 #include "settingsProvider.hpp"
 #include "keyboardProvider.hpp"
@@ -41,7 +42,7 @@ void debugMessage(char* text1, char* text2, int value) {
   MsgBoxPop();
 }
 void showRAMused() {
-  int ramused = 0x881E0000 - (int)GetStackPtr();
+  int ramused = getStackUsed();
   debugMessage((char*)"RAM", (char*)"B:", ramused);
   debugMessage((char*)"MB", (char*)"c:", getMsgBoxCount());
 }

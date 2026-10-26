@@ -14,6 +14,7 @@
 #include <alloca.h>
 
 #include "constantsProvider.hpp"
+#include "hardwareProvider.hpp"
 #include "graphicsProvider.hpp"
 #include "keyboardProvider.hpp"
 #include "settingsProvider.hpp"
@@ -217,7 +218,7 @@ int searchForFiles(File* files, const char* basepath, const char* needle, int se
   Bfile_FindClose(findhandle);
   if(abortkey == KEY_PRGM_ACON) return GETFILES_USER_ABORTED;
   // now that all handles are closed, take care of the recursive search, if it was requested
-  if((0x881E0000 - (int)GetStackPtr()) < 350000) { // if stack usage is below 350000 bytes...
+  if(getStackUsed() < 350000) { // if stack usage is below 350000 bytes...
     if(searchRecursively) for(int i=0; i<numberOfFoldersToSearchInTheEnd; i++) {
       // search only if there's enough free stack
       char newfolder[MAX_FILENAME_SIZE];
@@ -406,7 +407,7 @@ void copyFolder(char* oldfilename, char* newfilename) {
   Bfile_FindClose(findhandle);
   // now that all handles are closed, copy the items we found
   // copy only if there's enough free stack
-  if((0x881E0000 - (int)GetStackPtr()) < 350000) { // if stack usage is below 350000 bytes...
+  if(getStackUsed() < 350000) { // if stack usage is below 350000 bytes...
     for(int i=0; i<numberOfItemsToCopyInTheEnd; i++) {
       char olditem[MAX_FILENAME_SIZE];
       strcpy(olditem, oldfilename);
@@ -790,7 +791,7 @@ void PicocPlatformScanFile(const char *filename)
         }
         if(filesize > MAX_TEXTVIEWER_FILESIZE) filesize = MAX_TEXTVIEWER_FILESIZE;
         // check if there's enough stack to proceed:
-        if(0x881E0000 - (int)GetStackPtr() < 500000 - filesize*sizeof(unsigned char) - 30000) {
+        if((unsigned int)getStackUsed() + filesize*sizeof(unsigned char) + 30000U < 500000U) {
             asrc = (char*)alloca(filesize*sizeof(unsigned char)+5);
             Bfile_ReadFile_OS(hFile, asrc, filesize, 0);
             Bfile_CloseFile_OS(hFile);

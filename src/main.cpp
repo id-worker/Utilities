@@ -33,6 +33,7 @@ extern color_t* VRAM_base;
 int main()
 {
   // Add-in entry point
+  recordStackBase();
   
   if(setjmp(utilities_return)) {
     // we are returning from RunMat after the calc was locked.

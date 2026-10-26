@@ -1941,7 +1941,7 @@ void calendarToolsMenu(int y, int m, int d) {
         textElement elem[10];
         text.elements = elem;
         
-        char line1[50];
+        char line1[160];
         char buffer[20], buffer2[20];
         dateToString(buffer, y1, m1, d1);
         dateToString(buffer2, y2, m2, d2);

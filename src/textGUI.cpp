@@ -336,7 +336,7 @@ int doTextArea(textArea* text) {
         text->shadowCursorX = cursorX;
       else {
         if(cursorLine < 1) cursorLine = lineCount;
-        char message[25];
+        char message[40];
         sprintf(message, (char*)"Line %d of %d", cursorLine, lineCount);
         DefineStatusMessage(message, 1, 0, 0);
       }

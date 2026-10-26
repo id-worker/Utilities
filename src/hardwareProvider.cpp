@@ -40,12 +40,13 @@ int getHardwareModel() {
   /* Returns calculator model. There is a syscall for this, but with this we know exactly what we
    * are checking. Not to be confused with the "PCB model", which on the Prizm series appears to be
    * always 755D for CG 20 or 755A for CG 10.
-   * Returns 0 on unknown/inconclusive model, 1 on fx-CG 10 and 2 on fx-CG 20
+   * Returns 0 on unknown/inconclusive model, 1 on fx-CG 10, 2 on fx-CG 20 and 3 on fx-CG 50
    */
   char* byte1 = (char*)0x80000303;
   char* byte2 = (char*)0x80000305;
   if((*byte1 == '\x41') && (*byte2 == '\x5A')) return 1;
   if((*byte1 == '\x44') && (*byte2 == '\xAA')) return 2;
+  if((*byte1 == '\x41') && (*byte2 == '\xAA')) return 3;
   return 0;
 }
 
@@ -64,28 +65,25 @@ void setBrightnessToStartupSetting() {
   }
 }
 
+static unsigned int stack_base = 0;
+
+void recordStackBase() {
+  stack_base = (unsigned int)GetStackPtr();
+}
+
+int getStackUsed() {
+  unsigned int sp = (unsigned int)GetStackPtr();
+  if (!stack_base || sp > stack_base) {
+    stack_base = sp;
+    return 0;
+  }
+  return (int)(stack_base - sp);
+}
+
 // CPU CLOCKING CODE (used only from PicoC scripts)
 
-void CPU_change_freq(int mult) { 
-   __asm__( 
-      "mov r4, r0\n\t" 
-      "and #0x3F, r0\n\t"  
-      "shll16 r0\n\t"  
-      "shll8 r0\n\t"  
-      "mov.l frqcr, r1\n\t"   
-      "mov.l pll_mask, r3\n\t"   
-      "mov.l @r1, r2\n\t"   
-      "and r3, r2\n\t"   
-      "or r0, r2\n\t"  
-      "mov.l r2, @r1\n\t"  
-      "mov.l frqcr_kick_bit, r0\n\t"  
-      "mov.l @r1, r2\n\t" 
-      "or r0, r2\n\t" 
-      "rts\n\t" 
-      "mov.l r2, @r1\n\t" 
-      ".align 4\n\t" 
-      "frqcr_kick_bit: .long 0x80000000\n\t" 
-      "pll_mask: .long 0xC0FFFFFF\n\t"  
-      "frqcr: .long 0xA4150000\n\t" 
-   ); 
+void CPU_change_freq(int mult) {
+  volatile unsigned int* frqcr = (volatile unsigned int*)0xA4150000u;
+  *frqcr = (*frqcr & 0xC0FFFFFFu) | (((unsigned int)mult & 0x3Fu) << 24);
+  *frqcr |= 0x80000000u;
 }

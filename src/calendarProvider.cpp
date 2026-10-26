@@ -536,7 +536,7 @@ int SearchHelper(EventDate* date, SimpleCalendarEvent* calEvents, int daynumeven
       NULL != strcasestr((char*)dayEvents[curitem].description, needle)) {
       if(calEvents != NULL) {
         strncpy((char*)calEvents[index].title, (char*)dayEvents[curitem].title, 24);
-        calEvents[index].title[24] = '\0';
+        calEvents[index].title[23] = '\0';
         calEvents[index].startdate.day = dayEvents[curitem].startdate.day;
         calEvents[index].startdate.month = dayEvents[curitem].startdate.month;
         calEvents[index].startdate.year = dayEvents[curitem].startdate.year;

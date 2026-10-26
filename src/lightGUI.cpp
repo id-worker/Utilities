@@ -129,15 +129,15 @@ void colorLight() {
   setRawBacklightSubLevel(249);
   color_t color;
   switch (menu.selection) {
-    case 1: color = COLOR_BLUE; break;
-    case 2: color = COLOR_GREEN; break;
-    case 3: color = COLOR_RED; break;
-    case 4: color = COLOR_ORANGE; break;
-    case 5: color = COLOR_YELLOW; break;
-    case 6: color = COLOR_CYAN; break;
-    case 7: color = COLOR_BROWN; break;
+    case 1: color = 0b00000'000000'11111; break;
+    case 2: color = 0b00000'111111'00000; break;
+    case 3: color = 0b11111'000000'00000; break;
+    case 4: color = 0b11111'101001'00000; break;
+    case 5: color = 0b11111'111111'00000; break;
+    case 6: color = 0b00000'111111'11111; break;
+    case 7: color = 0b10100'010100'00101; break;
     case 8:
-    default: color = COLOR_MAGENTA; break;
+    default: color = 0b11111'000000'11111; break;
   }
   Bdisp_Fill_VRAM(color, 3 );
   DrawFrame(color);

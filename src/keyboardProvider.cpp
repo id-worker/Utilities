@@ -17,6 +17,7 @@ extern "C" {
 }
 
 #include "keyboardProvider.hpp" 
+#include "hardwareProvider.hpp"
 #include "settingsGUI.hpp" 
 #include "debugGUI.hpp"
 #include "chronoProvider.hpp"
@@ -28,7 +29,7 @@ extern jmp_buf utilities_return;
 static int mGetKeyMode = MGETKEY_MODE_NORMAL;
 
 void saveVRAMandCallSettings() {
-  int stackused = 0x881E0000 - (int)GetStackPtr();
+  int stackused = getStackUsed();
   // if(stackused > 300000) then there's not enough free stack for us to save the screen
   // and still keep enough stack to call settings safely, so ask the system to save instead
   // (it will be discarded if the user accesses the menu)
@@ -94,7 +95,7 @@ void setmGetKeyMode(int mode) {
   mGetKeyMode = mode;
 }
 
-/* CODE BY SIMON LOTHAR, AVAILABLE ON "fx_calculators_SuperH_based.chm" version 16 */
+/* CODE BY SIMON LOTHAR, AVAILABLE ON https://prizm.cemetech.net/index.php?title=SetGetkeyToMainFunctionReturnFlag */
 
 // the function assumes, that the RAM-pointer to GetkeyToMainFunctionReturnFlag is loaded 
 // immediately by a "Move Immediate Data"-instruction
@@ -137,7 +138,7 @@ unsigned int SetGetkeyToMainFunctionReturnFlag(unsigned int enabled) {
       if (addr2 >= (int)0x81000000) return 0x108;
 
       addr = *(unsigned int*)addr2;
-      if ((addr & 0xFF000000) != 0x88000000) return 0x109;
+      if ((addr & 0xFF000000) != 0x88000000 && (addr & 0xFF000000) != 0x8C000000) return 0x109; // Changed to work on fx-CG 50 as well as 10/20.
 
       // finally perform the desired operation and set the flag:
       if (enabled) *(unsigned char*)addr = 0;

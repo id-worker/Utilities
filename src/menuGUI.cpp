@@ -17,6 +17,7 @@
 #include "graphicsProvider.hpp"
 #include "settingsProvider.hpp"
 #include "stringsProvider.hpp"
+#include "hardwareProvider.hpp"
 
 typedef scrollbar TScrollbar;
 
@@ -107,13 +108,15 @@ int doMenu(Menu* menu, MenuItemIcon* icontable) {
             (curitem+itemsStartY-menu->scroll)<=(itemsStartY+itemsHeight) &&
             icontable != NULL
           ) {
+            unsigned short mask = getHardwareModel() == 3 ? 0xFBE0 : 0xf81f;
+            
             if (menu->items[curitem].isfolder == 1) {
               // assumes first icon in icontable is the folder icon
               CopySpriteMasked(icontable[0].data, (menu->startX)*18,
-                               (curitem+itemsStartY-menu->scroll)*24, 0x12, 0x18, 0xf81f);
+                               (curitem+itemsStartY-menu->scroll)*24, 0x12, 0x18, mask);
             } else if(menu->items[curitem].icon >= 0) {
               CopySpriteMasked(icontable[menu->items[curitem].icon].data, (menu->startX)*18,
-                               (curitem+itemsStartY-menu->scroll)*24, 0x12, 0x18, 0xf81f);
+                               (curitem+itemsStartY-menu->scroll)*24, 0x12, 0x18, mask);
             }
           }
           if (menu->items[curitem].isselected) {

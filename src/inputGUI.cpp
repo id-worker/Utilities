@@ -46,7 +46,7 @@ int doTextInput(textInput* input) {
       input->buffer[1]='\x0';
     }
     DisplayMBString2(0, (unsigned char*)input->buffer, input->start, input->cursor, 0, input->x,
-                     input->y*24-24, widthForSyscalls+input->x, input->width==21? 0 : 1);
+                     input->y*24-24, widthForSyscalls+input->x, input->width==21? 0 : 1, 0);
     
     drawLine(input->x*18-18, input->y*24-1,
              input->width == 21 ? LCD_WIDTH_PX-1 : input->width*18+input->x*18-18-1,

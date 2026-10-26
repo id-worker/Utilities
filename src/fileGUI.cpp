@@ -14,6 +14,7 @@
 #include <alloca.h>
 
 #include "constantsProvider.hpp"
+#include "hardwareProvider.hpp"
 #include "settingsProvider.hpp"
 #include "keyboardProvider.hpp"
 #include "graphicsProvider.hpp"
@@ -52,15 +53,15 @@ void fileManager() {
         textfileEditor(filetoedit);
       break;
       #ifdef ENABLE_PICOC_SUPPORT
-      case 2:
+      case 2: {
         DefineStatusMessage((char*)"", 1, 0, 0);
         PlatformClearOutput();
-        int res = picoc(filetoedit);
-        if(res || PlatformGetOutputCursor() != PlatformGetOutputPointer()) {
+        int picocRes = picoc(filetoedit);
+        if(picocRes || PlatformGetOutputCursor() != PlatformGetOutputPointer()) {
           char resStr[10];
-          itoa(res, (unsigned char*)resStr);
+          itoa(picocRes, (unsigned char*)resStr);
           // null-terminate output:
-          *PlatformGetOutputCursor() = NULL;
+          *PlatformGetOutputCursor() = '\0';
 
           textArea text;
           text.title = (char*)"PicoC";
@@ -80,6 +81,7 @@ void fileManager() {
           doTextArea(&text);
         }
         break;
+      }
       #endif
     }
   }
@@ -992,7 +994,7 @@ void viewFileAsText(char* filename) {
     }
     if(filesize > MAX_TEXTVIEWER_FILESIZE) filesize = MAX_TEXTVIEWER_FILESIZE;
     // check if there's enough stack to proceed:
-    if(0x881E0000 - (int)GetStackPtr() < 500000 - filesize*sizeof(unsigned char) - 30000) {
+    if((unsigned int)getStackUsed() + filesize*sizeof(unsigned char) + 30000U < 500000U) {
       asrc = (unsigned char*)alloca(filesize*sizeof(unsigned char)+5);
       Bfile_ReadFile_OS(hFile, asrc, filesize, 0);
       Bfile_CloseFile_OS(hFile);

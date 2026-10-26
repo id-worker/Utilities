@@ -49,7 +49,7 @@ void firstRunWizard() {
   text.allowEXE = 1;
   
   elem[0].text = (char*)"This add-in provides functionality not originally present on Casio Prizm "
-                        "(fx-CG 10/20) calculators:";
+                        "(fx-CG 50) calculators:";
   elem[1].newLine = 1;
   elem[1].lineSpacing = 5;
   elem[1].text = (char*)"- Clock and chronometer\n"
