@@ -1,3 +1,5 @@
+Copyright (c) 2026 Alex Work. Modifications described in this file, distributed under the repository's GNU GPL v2 license.
+
 # Notice of Modifications — Fork Patch Notes (RU + EN)
 
 ## English
