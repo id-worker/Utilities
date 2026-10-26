@@ -3,15 +3,13 @@
 #---------------------------------------------------------------------------------
 .SUFFIXES:
 #---------------------------------------------------------------------------------
-# Set toolchain location in an environment var for future use, this will change
-# to use a system environment var in the future.
+# Set toolchain location in an environment var for future use
 #---------------------------------------------------------------------------------
 ifeq ($(strip $(FXCGSDK)),)
-export FXCGSDK := $(abspath ../../)
+export FXCGSDK := /var/tmp/pt/libfxcg
 endif
 
-include $(FXCGSDK)/common/prizm_rules
-
+include $(FXCGSDK)/toolchain/prizm_rules
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
@@ -19,34 +17,36 @@ include $(FXCGSDK)/common/prizm_rules
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
-TARGET		:=	$(notdir $(CURDIR))
+TARGET		:=	Utilities
 BUILD		:=	build
 SOURCES		:=	src src/picoc src/picoc/cstdlib src/picoc/platform
 DATA		:=	data  
 INCLUDES	:=
 
 #---------------------------------------------------------------------------------
-# git version controlling mechanism
+# Version metadata (v2.1 fx-CG50 + PicoC edition)
 #---------------------------------------------------------------------------------
-$(shell touch $(CURDIR)/src/versionProvider.cpp) #force version and timestamp defines to update.
-GIT_VERSION = $(shell sh -c 'git describe --abbrev=4 --dirty --always')
-GIT_TIMESTAMP += "$(shell git log --pretty=format:'%aD' -1)"
+GIT_VERSION ?= v2.1-cg50
+GIT_TIMESTAMP ?= "2026-10-26"
+CUSTOM_FLAGS ?= -D__ENABLE_PICOC_SUPPORT
+
 #---------------------------------------------------------------------------------
 # options for code and add-in generation
 #---------------------------------------------------------------------------------
 
-MKG3AFLAGS := -r 02.01.0001 -n basic:Utilities -n internal:UTILS -i uns:../unselected.bmp -i sel:../selected.bmp
+MKG3AFLAGS := -V 02.01 -n basic:Utilities -n internal:UTILS -i uns:../unselected.bmp -i sel:../selected.bmp
 
-COMMONFLAGS = -Os -flto -fno-exceptions -Wall $(MACHDEP) $(INCLUDE) -D__GIT_VERSION=\"$(GIT_VERSION)\" -D__GIT_TIMESTAMP=\"$(GIT_TIMESTAMP)\" $(CUSTOM_FLAGS)
-CFLAGS	= -std=c99 $(COMMONFLAGS)
-CXXFLAGS	=	-std=c++11 $(COMMONFLAGS)
+COMMONFLAGS = -Os -Wall -fcommon $(MACHDEP) $(INCLUDE) -ffunction-sections -fdata-sections \
+		  -D__GIT_VERSION=\"$(GIT_VERSION)\" -D__GIT_TIMESTAMP=\"$(GIT_TIMESTAMP)\" $(CUSTOM_FLAGS)
+CFLAGS	= -std=gnu99 $(COMMONFLAGS)
+CXXFLAGS	= -std=gnu++14 $(COMMONFLAGS) -fno-exceptions -fno-rtti
 
-LDFLAGS	= $(MACHDEP) -T$(FXCGSDK)/common/prizm.ld -Os -flto -Wl,-static -Wl,-gc-sections
+LDFLAGS	= $(MACHDEP) -T../prizm.x -Wl,-static -Wl,-gc-sections
 
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:=	 -lfxcg -lc -lgcc
+LIBS	:=	-Wl,--start-group -lc -lfxcg -lgcc -Wl,--end-group
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -104,17 +104,21 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
 					-L$(LIBFXCG_LIB)
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
-.PHONY: $(BUILD) clean
+.PHONY: all clean
 
 #---------------------------------------------------------------------------------
+all: $(BUILD)
+	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+
 $(BUILD):
-	@[ -d $@ ] || mkdir $@
-	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+	@mkdir $@
 
 #---------------------------------------------------------------------------------
 export CYGWIN := nodosfilewarning
 clean:
-	$(RM) -fr $(BUILD) $(OUTPUT).bin $(OUTPUT).g3a
+	$(call rmdir,$(BUILD))
+	$(call rm,$(OUTPUT).bin)
+	$(call rm,$(OUTPUT).g3a)
 
 #---------------------------------------------------------------------------------
 else

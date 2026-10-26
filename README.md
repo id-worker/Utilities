@@ -1,4 +1,13 @@
-# Utilities add-in for the Casio Prizm (fx-CG 10 and 20)
+> **Fork notice / Уведомление о форке:** This repository is a **modified fork** of
+> [`gbl08ma/utilities`](https://github.com/gbl08ma/utilities) (author: Gustavo Balieiro),
+> licensed under **GNU GPL v2** — see [`LICENSE`](LICENSE).
+> Local changes (fx-CG50 build fixes, working PicoC bindings `libs.c`, version `v2.1-cg50c`)
+> are listed in [`PATCHNOTES.md`](PATCHNOTES.md).
+>
+> Это **модифицированный форк** `gbl08ma/utilities` под лицензией **GNU GPL v2**;
+> список локальных правок — в `PATCHNOTES.md`.
+
+# Utilities add-in for the Casio Prizm (fx-CG 50)
 
 The Utilities add-in enhances your Casio Prizm calculator by providing functionality not originally found in the OS, or by providing enhanced alternatives to existing functionality.
 
